@@ -1,1 +1,4 @@
 *input.txt
+
+# override for template folder
+!00/**
