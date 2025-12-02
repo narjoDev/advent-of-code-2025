@@ -1,3 +1,4 @@
+import re
 from typing import List, Tuple
 
 
@@ -22,7 +23,7 @@ def pair_to_range(pair: Tuple[int, int]):
     return range(pair[0], pair[1] + 1)
 
 
-def is_invalid(id: int) -> bool:
+def is_repeat_twice(id: int) -> bool:
     as_string = str(id)
     middle_index = len(as_string) // 2
     return as_string[0:middle_index] == as_string[middle_index:]
@@ -34,13 +35,26 @@ def part_one(data: str):
     total = 0
     for range in ranges:
         for id in range:
-            if is_invalid(id):
+            if is_repeat_twice(id):
                 total += id
     return total
 
 
+def is_repeat_at_least_twice(id: int) -> bool:
+    as_string = str(id)
+    pattern = re.compile(r"^(.+)\1+$")
+    return re.match(pattern, as_string) is not None
+
+
 def part_two(data: str):
-    pass
+    pairs = parse_pairs(data)
+    ranges = map(pair_to_range, pairs)
+    total = 0
+    for range in ranges:
+        for id in range:
+            if is_repeat_at_least_twice(id):
+                total += id
+    return total
 
 
 def solve(filename):
