@@ -11,6 +11,7 @@ def parse_banks(data: str) -> List[List[int]]:
     return [[int(char) for char in line] for line in lines]
 
 
+# original solution
 def max_joltage(bank: List[int]) -> int:
     first_digit_index = len(bank) - 2  # second to last digit
 
@@ -24,15 +25,25 @@ def max_joltage(bank: List[int]) -> int:
     return first_digit * 10 + second_digit
 
 
+# alternate solution
+def max_joltage_redux(bank: List[int]) -> int:
+    first_digit = max(bank[0:-1])
+    first_digit_index = bank.index(first_digit, 0, -1)
+
+    second_digit = max(bank[first_digit_index + 1 :])
+    return first_digit * 10 + second_digit
+
+
 def part_one(data: str):
     # convert data into banks
     banks = parse_banks(data)
     # map each bank to maximum joltage
-    jolts = map(max_joltage, banks)
+    jolts = map(max_joltage_redux, banks)
     # sum max joltage
     return sum(jolts)
 
 
+# original solution
 def max_joltage_flexible(bank: List[int], number_batteries: int) -> int:
     remaining = number_batteries
     total = 0
@@ -55,12 +66,35 @@ def max_joltage_flexible(bank: List[int], number_batteries: int) -> int:
     return total
 
 
+# alternate solution
+def max_joltage_flexible_redux(bank: List[int], number_batteries: int) -> int:
+    remaining = number_batteries
+    total = 0
+
+    first_available_index = 0
+
+    while remaining > 0:
+        last_available_next_index = len(bank) - remaining
+        next_digit = max(bank[first_available_index : last_available_next_index + 1])
+        next_digit_index = bank.index(
+            next_digit, first_available_index, last_available_next_index + 1
+        )
+
+        total = total * 10 + bank[next_digit_index]
+        first_available_index = next_digit_index + 1
+        remaining -= 1
+
+    return total
+
+
 PART_TWO_BATTERIES = 12
 
 
 def part_two(data: str):
     banks = parse_banks(data)
-    jolts = map(lambda bank: max_joltage_flexible(bank, PART_TWO_BATTERIES), banks)
+    jolts = map(
+        lambda bank: max_joltage_flexible_redux(bank, PART_TWO_BATTERIES), banks
+    )
     return sum(jolts)
 
 
