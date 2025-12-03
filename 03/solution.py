@@ -33,8 +33,35 @@ def part_one(data: str):
     return sum(jolts)
 
 
+def max_joltage_flexible(bank: List[int], number_batteries: int) -> int:
+    remaining = number_batteries
+    total = 0
+
+    first_available_index = 0
+
+    while remaining > 0:
+        last_available_next_index = len(bank) - remaining
+        next_digit_index = last_available_next_index
+
+        # find the earliest instance of the highest remaining number
+        for i in range(next_digit_index - 1, first_available_index - 1, -1):
+            if bank[i] >= bank[next_digit_index]:
+                next_digit_index = i
+
+        total = total * 10 + bank[next_digit_index]
+        first_available_index = next_digit_index + 1
+        remaining -= 1
+
+    return total
+
+
+PART_TWO_BATTERIES = 12
+
+
 def part_two(data: str):
-    pass
+    banks = parse_banks(data)
+    jolts = map(lambda bank: max_joltage_flexible(bank, PART_TWO_BATTERIES), banks)
+    return sum(jolts)
 
 
 def solve(filename):
