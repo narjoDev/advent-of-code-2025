@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import List, Tuple
 
 
@@ -55,7 +56,9 @@ def part_one(data: str):
 
 
 def part_two(data: str):
-    pass
+    [ranges, _available] = full_parse_ranges_available(data)
+    range_lengths = [len(r) for r in ranges]
+    return reduce(lambda a, b: a + b, range_lengths)
 
 
 def solve(filename):
