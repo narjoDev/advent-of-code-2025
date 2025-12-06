@@ -6,14 +6,14 @@ def read_file(filename: str) -> str:
         return file.read()
 
 
-def parse_input(data: str) -> List[str]:
-    return data.split("\n")
+def parse_grid(data: str) -> List[List[str]]:
+    return [[char for char in line] for line in data.split("\n")]
 
 
 PAPER_CHARACTER = "@"
 
 
-def is_inbounds(lines, line_index, col_index):
+def is_inbounds(lines: List[List[str]], line_index: int, col_index: int):
     return (
         line_index >= 0
         and col_index >= 0
@@ -22,7 +22,7 @@ def is_inbounds(lines, line_index, col_index):
     )
 
 
-def number_adjacent(lines, line_index, col_index):
+def number_adjacent(lines: List[List[str]], line_index: int, col_index: int):
     offsets = [
         (-1, -1),
         (-1, 0),
@@ -50,7 +50,7 @@ ADJACENT_LIMIT = 4
 
 
 def part_one(data: str):
-    lines = parse_input(data)
+    lines = parse_grid(data)
     total = 0
     for line_index in range(0, len(lines)):
         line = lines[line_index]
@@ -64,7 +64,26 @@ def part_one(data: str):
 
 
 def part_two(data: str):
-    pass
+    lines = parse_grid(data)
+    total = 0
+
+    while True:
+        any_removed = False
+
+        for line_index in range(0, len(lines)):
+            line = lines[line_index]
+            for col_index in range(len(line)):
+                char = line[col_index]
+                if char == PAPER_CHARACTER:
+                    if number_adjacent(lines, line_index, col_index) < ADJACENT_LIMIT:
+                        total += 1
+                        lines[line_index][col_index] = "."
+                        any_removed = True
+
+        if not any_removed:
+            break
+
+    return total
 
 
 def solve(filename):
